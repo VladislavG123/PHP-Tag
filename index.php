@@ -1,35 +1,61 @@
 <?php
 
-include_once "Models/Attributes.php";
-include_once "Models/Tag.php";
-include_once "Models/Body.php";
+function printMap($road, $width, $height)
+{
+    for ($x=0; $x < $width; $x++) { 
+        for ($y=0; $y < $height; $y++) { 
+            if(gettype($road[$x][$y]) === "object")
+                echo "*";
+            else 
+                echo "#";
+        }
+        echo "<br />";
+    }
+}
 
-$div = new Tag("div", []);
+include_once 'Helpers.php';
 
-$link = new Tag("a", []);
+$width = 3;
+$height = 10;
 
-$link->setAttributes('href', "https://google.com");
-$link->appendBody("Hello World");
+$road = [];
 
-$div->setAttributes("style", "background: red;
-                              width: 100px;
-                              height: 100px;");
-$div->appendBody($link);
+for ($x=0; $x < $width; $x++) { 
+    for ($y=0; $y < $height; $y++) { 
+        if (rand(500, 1000) % 20 == 0) {
+            $road[$x][$y] = new Car();
+        }
+    }
+}
+
+printMap($road, $width, $height);
+
+while (true) {
+    
+    for ($x=0; $x < $width; $x++) { 
+        for ($y=0; $y < $height; $y++) { 
+                
+            $rand = rand(1, 3);
+            $result = false;
+            if ($rand == 1) {
+                $result = Car::turnLeft($road[$x][$y], $road[$x - 1][$y]);
+            }
+            else if ($rand == 2) {
+                $result = Car::turnRight($road[$x][$y], $road[$x + 1][$y]);
+            }          
+            
+            if ($rand == 3 || $result === false) {
+                $result = Car::moveForward($road[$x][$y], $road[$x][$y - 1]);
+            }
+            echo $result . "<br />";
+
+            
+        }
+    }
+    
+    break;
+    sleep(1);
+    printMap($road, $width, $height);
+}
 
 
-
-echo $div;
-/*
-include_once "Models/Attributes.php";
-include_once "Models/Tag.php";
-include_once "Models/Body.php";
-
-$body = new Body();
-$tag = new Tag('div', []);
-
-$body->appendBody(" world");
-$body->prependBody($tag);
-
-$tag->setAttributes('disabled');
-
-echo $body;*/
