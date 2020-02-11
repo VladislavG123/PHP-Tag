@@ -1,52 +1,34 @@
 <?php
-
-class Tag
+/** 
+* Class Tag
+* @method static Tag a(array $attributes = [])
+* @method static Tag h1(array $attributes = [])
+* @method static Tag h2(array $attributes = [])
+* @method static Tag h3(array $attributes = [])
+* @method static Tag h4(array $attributes = [])
+* @method static Tag b(array $attributes = [])
+* @method static Tag li(array $attributes = [])
+* @method static Tag ul(array $attributes = [])
+* @method static Tag div(array $attributes = [])
+* @method static Tag ol(array $attributes = [])
+* @method static Tag input(array $attributes = [])
+* @method static Tag button(array $attributes = [])
+* @method static Tag img(array $attributes = [])
+* @method static Tag p(array $attributes = [])
+* @method static Tag form(array $attributes = [])
+* @method static Tag html(array $attributes = [])
+* @method static Tag body(array $attributes = [])
+* */
+class Tag extends BaseTag 
 {
-    private $name;
-    private $attributes;
-    private $isSelfClosing;
-    private $body;
 
-    function __construct(string $name, array $attributes = [])
+    public static function make($name, $attributes = [])
     {
-        $this->body = new Body();
-        $this->isSelfClosing = false;
-        $this->name = $name;
-        $this->attributes = new Attributes($attributes);
+        return new self($name, $attributes);
     }
 
-    public function setAttributes($key, $value = null)
-    {
-        $this->attributes->setAttribute($key, $value);
-    }
-
-    public function selfClosing()
-    {
-        $this->isSelfClosing = true;
-    }
-
-    public function prependBody($body)
-    {
-        $this->body->prependBody($body);
-
-        return $this;
-    }
-
-    public function appendBody($body)
-    {
-        $this->body->appendBody($body);
-
-        return $this;
-    }
-
-    public function __toString() : string
-    {
-        $result = "<$this->name ";
-
-        $result .= $this->attributes;
-
-        $result .=  $this->isSelfClosing ? " />" : ">$this->body</$this->name>";
-
-        return $result;
+    public static function __callStatic($name, $arguments){
+        array_unshift($arguments, $name);
+        return call_user_func_array([self::class, 'make'], $arguments);
     }
 }

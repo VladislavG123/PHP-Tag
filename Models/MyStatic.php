@@ -2,13 +2,10 @@
 
 class MyStatic
 {
-    public const NAME = "John";
-
     public static $name = 'John';
 
-    public function __construct()
-    {
-        MyStatic::$name = "Bob";
+    static function printName(){
+        echo static::$name;
     }
 
     public static function action()
